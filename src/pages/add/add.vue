@@ -78,14 +78,17 @@
         <i-icon type="add"/>
         添加
       </i-button>
-      <i-button @click="addGood" :loading="isUploading" type="primary">
+      <i-button @click="addGood"  type="primary">
         提交
       </i-button>
     </i-panel>
+    <i-spin size="large" fix v-if="isUploading"></i-spin>
   </div>
 </template>
 
 <script>
+  const { $Toast } = require('../../iview-dist/base/index');
+  import goodService from '../../mixins/goodService.js'
   export default {
     name: "add",
     data: function() {
@@ -243,18 +246,38 @@
         this.colors[index][key] = value;
       },
       addGood() {
+        let self=this;
         this.isUploading = true;
+        let data={
+          images: self.getImageUrls(),
+          salePrice: self.salePrice,
+          buyPrice: self.buyPrice,
+          tags:self.currentTags,
+          title:self.title,
+          barcode:self.barcode,
+          storage:self.storage,
+          colors:JSON.stringify(self.colors)
+        };
+        console.log(data);
         let interval = setInterval(function() {
           let isuploadingFile = false;
-          this.fileList.forEach(file => {
+          self.fileList.forEach(file => {
             if (file.progress != 1) {
               isuploadingFile = true;
             }
           });
-          if (!isuploadingFile) {
-            console.log();
+          if(!isuploadingFile){
+            clearInterval(interval);
+            goodService.addGoodRequest(data).then(res =>{
+              console.log(res);
+              self.isUploading = false;
+              $Toast({content:'添加商品成功',type:'success'});
+            }).catch(e => console.log(e));
           }
-        });
+        },500);
+      },
+      getImageUrls(){
+        return this.fileList.map(file => file.remoteUrl)
       }
     },
     mounted: function() {

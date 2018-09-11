@@ -9,5 +9,6 @@
     "i-icon": "../../iview-dist/icon/index",
     "i-drawer": "../../iview-dist/drawer/index",
     "i-checkbox-group": "../../iview-dist/checkbox-group/index",
-    "i-checkbox": "../../iview-dist/checkbox/index"
+    "i-checkbox": "../../iview-dist/checkbox/index",
+    "i-modal": "../../iview-dist/modal/index"
   }}
